@@ -11,6 +11,7 @@ export class BotConfig implements BotConfigOptions {
   pairs: string[];
   interval: number;
   threshold: number;
+  botConfigId: number;
 
   // Default configuration
   private static defaults: BotConfigOptions = {
@@ -25,6 +26,8 @@ export class BotConfig implements BotConfigOptions {
     this.pairs = config.pairs;
     this.threshold = config.threshold;
     this.interval = config.interval;
+    //initialize "null", updated only after inserted on db
+    this.botConfigId = -1
   }
 
   private parseArguments(): BotConfigOptions {
@@ -49,6 +52,14 @@ export class BotConfig implements BotConfigOptions {
 
   public getThreshold(): number {
     return this.threshold;
+  }
+
+  public getBotConfigId(): number {
+    return this.botConfigId;
+  }
+
+  public setBotConfigId(id: number) {
+    this.botConfigId = id;
   }
 
   public toJSON(): BotConfigOptions {
