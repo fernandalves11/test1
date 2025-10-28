@@ -62,6 +62,4 @@ export class PriceService {
     }
     return null;
   }
-
-
 }

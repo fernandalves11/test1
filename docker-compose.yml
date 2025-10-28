@@ -1,0 +1,50 @@
+services:
+  # ------------------------------------------------------------------
+  # Application Service
+  # ------------------------------------------------------------------
+  app:
+    # Use the Dockerfile in the current directory to build the image
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # Map the application's port (if it were a web app)
+    # ports:
+    #   - "3000:3000"
+    # Environment variables for the application
+    environment:
+      # The app is configured to look for DATABASE_URL or PG_URI
+      # We use the service name 'db' as the hostname.
+      DATABASE_URL: postgresql://user:password@db:5432/uphold_db
+      # Add other necessary environment variables here, e.g., for Uphold API keys
+      # UPHOLD_API_KEY: your_api_key
+      # UPHOLD_API_SECRET: your_api_secret
+    # Ensure the app starts only after the database is ready
+    depends_on:
+      - db
+    # Restart policy to keep the bot running
+    restart: always
+
+  # ------------------------------------------------------------------
+  # PostgreSQL Database Service
+  # ------------------------------------------------------------------
+  db:
+    image: postgres:16-alpine
+    # Persist data in a volume
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    # Environment variables for PostgreSQL
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      # Database name to be created automatically
+      POSTGRES_DB: uphold_db
+    # Expose the database port (optional, for connecting from host machine)
+    # ports:
+    #   - "5432:5432"
+    restart: always
+
+# ------------------------------------------------------------------
+# Docker Volumes
+# ------------------------------------------------------------------
+volumes:
+  postgres_data:
