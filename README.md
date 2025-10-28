@@ -55,8 +55,8 @@ This option runs the bot directly on your machine, fulfilling Phase 1 (v1)
 │   ├── config                              # Configuration-related files
 │   │    └── BotConfig.ts                   # Bot-specific configurations and constants
 │   ├── core                                # Core logic of the bot
-│   │    ├── AlertService.ts                # Logic for managing and triggering alerts
-│   │    ├── PriceService.ts                # Logic for fetching price data from external APIs
+│   │    ├── AlertService.ts                # Service to manage alerts logic
+│   │    ├── PriceService.ts                # Service to manage price logic
 │   │    └── UpholdBot.ts                   # Bot core execution
 │   ├── services                            # External communication (e.g., database, API)
 │   │    └── UpholdAPI.ts                   # API interaction with the Uphold service
