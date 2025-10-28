@@ -1,0 +1,21 @@
+{
+  "name": "uphold-bot-assessment",
+  "version": "1.0.0",
+  "description": "Automated price alert bot for currency fluctuations using the Uphold API.",
+  "author": "Fernanda Alves",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.0",
+    "@types/node": "^20.4.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
