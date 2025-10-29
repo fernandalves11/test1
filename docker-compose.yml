@@ -1,0 +1,55 @@
+services:
+  # ------------------------------------------------------------------
+  # Application Service
+  # ------------------------------------------------------------------
+  uphold-bot-assessment:
+    # Use the Dockerfile in the current directory to build the image
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # Environment variables for the application
+    environment:
+      # dynamic db arguments
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+
+      # dynamic bot configuration
+      BOT_PAIRS: ${BOT_PAIRS}
+      BOT_INTERVAL: ${BOT_INTERVAL}
+      BOT_THRESHOLD: ${BOT_THRESHOLD}
+    command: >
+      node dist/index.js
+    # Ensure the app starts only after the database is ready
+    depends_on:
+      - db
+    # Restart policy to keep the bot running
+    restart: always
+
+  # ------------------------------------------------------------------
+  # PostgreSQL Database Service
+  # ------------------------------------------------------------------
+  db:
+    image: postgres:17
+    # Persist data in a volume
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    # Environment variables for PostgreSQL
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      # Database name to be created automatically
+      POSTGRES_DB: upholddb
+    # Expose the database port (optional, for connecting from host machine)
+    # ports:
+    #   - "5432:5432"
+    restart: always
+
+# ------------------------------------------------------------------
+# Docker Volumes
+# ------------------------------------------------------------------
+volumes:
+  postgres_data:
