@@ -11,6 +11,7 @@ export class BotConfig implements BotConfigOptions {
   pairs: string[];
   interval: number;
   threshold: number;
+  botConfigId: number;
 
   // Default configuration
   private static defaults: BotConfigOptions = {
@@ -25,15 +26,17 @@ export class BotConfig implements BotConfigOptions {
     this.pairs = config.pairs;
     this.threshold = config.threshold;
     this.interval = config.interval;
+    //initialize "null", updated only after inserted on db
+    this.botConfigId = -1
   }
 
   private parseArguments(): BotConfigOptions {
-    const pairsArg = process.env.npm_config_pairs;
-    const intervalArg = process.env.npm_config_interval;
-    const thresholdArg = process.env.npm_config_threshold;
+    const pairsArg = process.env.npm_config_pairs || process.env.BOT_PAIRS;
+    const intervalArg = process.env.npm_config_interval || process.env.BOT_INTERVAL;
+    const thresholdArg = process.env.npm_config_threshold || process.env.BOT_THRESHOLD;
 
     const pairs = pairsArg ? pairsArg.split(',') : BotConfig.defaults.pairs;
-    const interval = intervalArg ? parseInt(intervalArg, 10) : BotConfig.defaults.interval;
+    const interval = intervalArg ? parseInt(intervalArg) : BotConfig.defaults.interval;
     const threshold = thresholdArg ? parseFloat(thresholdArg) : BotConfig.defaults.threshold;
 
     return { pairs: pairs, interval: interval, threshold: threshold };
@@ -49,6 +52,14 @@ export class BotConfig implements BotConfigOptions {
 
   public getThreshold(): number {
     return this.threshold;
+  }
+
+  public getBotConfigId(): number {
+    return this.botConfigId;
+  }
+
+  public setBotConfigId(id: number) {
+    this.botConfigId = id;
   }
 
   public toJSON(): BotConfigOptions {

@@ -3,6 +3,7 @@ import { AlertService } from './AlertService.js';
 import { BotConfig } from '../config/BotConfig.js';
 import { PriceService } from './PriceService.js';
 import { Logger } from '../utils/Logger.js';
+import db from "../services/Database.js";
 
 /**
  * Main controller that ties everything together: config, pricing and alerts.
@@ -31,7 +32,8 @@ export class UpholdBot {
       for (const pair of this.botConfig.getPairs()) {
         const result = await this.priceServ.checkPriceChange(pair, this.botConfig.getThreshold());
         if (result) {
-          this.alertServ.triggerAlert(result.pair, result.change, result.previous, result.current);
+          const alertConfig = this.alertServ.triggerAlert(result.pair, result.change, result.previous, result.current, this.botConfig.getBotConfigId());
+          db.saveAlert(alertConfig);
         }
       }
     }, this.botConfig.getInterval());
@@ -44,6 +46,7 @@ export class UpholdBot {
     if (this.intervalId) {
       clearInterval(this.intervalId);
       this.intervalId = null;
+      db.closeDb();
       Logger.info("🔴 Bot stopped.");
     }
   }
@@ -67,5 +70,11 @@ export class UpholdBot {
     });
 
     Logger.info("🟥 Type 'stop' and press Enter to stop the bot.");
+  }
+
+  async init() {
+    await db.initDb();
+    const botConfigId = await db.saveBotConfig(this.botConfig);
+    this.botConfig.setBotConfigId(botConfigId);
   }
 }
